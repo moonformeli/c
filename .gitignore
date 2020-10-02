@@ -1,3 +1,4 @@
 node_modules
-yarn-eror.log
+yarn-error.log
 .next
+.env

@@ -1,25 +1,22 @@
-import axios from 'axios';
-import { NextPage } from 'next';
+import type { PageProps } from '@/payloads/common';
+import TotalRequester from '@/requester/totals/TotalReqeuster';
 
-import CountryRequester from '../requester/countries/CountryRequester';
-
-interface Props {
-  userAgent?: string;
-}
-
-const Page: NextPage<Props> = ({ userAgent }) => (
-  <main>Your user agent: {userAgent}</main>
-);
-
-Page.getInitialProps = async ({ req }) => {
-  const requester = new CountryRequester();
-  const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
-
-  const d = await requester.getAllCountries();
-
-  console.dir(d.data);
-
-  return { userAgent };
+const Index = ({ dailyTotals, lang }: PageProps<typeof getServerSideProps>) => {
+  return <main>Your user agent</main>;
 };
 
-export default Page;
+export const getServerSideProps = async ({ req }) => {
+  const totalRequester = new TotalRequester(req);
+
+  const r = await totalRequester.getDailyReportTotals({
+    dateFormat: 'YYYY-MM-DD',
+  });
+
+  return {
+    props: {
+      dailyTotals: r.data,
+    },
+  };
+};
+
+export default Index;
